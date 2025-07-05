@@ -1,0 +1,106 @@
+/* body {
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+header {
+  background: #1f2937;
+  color: #fff;
+  padding: 24px 0 16px 0;
+  text-align: center;
+  font-size: 2rem;
+  letter-spacing: 2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 32px 16px 16px 16px;
+}
+.chat-container {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(31,41,55,0.08);
+  padding: 32px 24px;
+  width: 100%;
+  max-width: 480px;
+  min-height: 320px;
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.dummy-message {
+  color: #6b7280;
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+  text-align: center;
+}
+footer {
+  background: #f3f4f6;
+  color: #374151;
+  text-align: center;
+  padding: 16px 0;
+  font-size: 1rem;
+  border-top: 1px solid #e5e7eb;
+} 
+ Existing Carbon styles for the record button */
+#WACContainer.WACContainer .RecordButton.cds--btn {
+  width: auto;
+  min-width: 180px;
+  max-width: 260px;
+  padding: 10px 24px;
+  margin: 16px auto 8px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #0057b8;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: background 0.2s;
+}
+
+#WACContainer.WACContainer .RecordButton.cds--btn:hover {
+  background: #003e7e;
+}
+
+#WACContainer.WACContainer .RecordButton.cds--btn svg {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+#WACContainer.WACContainer .RecordButton.cds--btn path {
+  fill: #ffffff;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  min-width: 100vw;
+  background: url('fabmisr_back.png') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Make your main content stand out */
+main, .chat-container {
+  background: rgba(255,255,255,0.92);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(31,41,55,0.08);
+  padding: 32px 24px;
+  margin: 32px auto;
+  max-width: 480px;
+  min-height: 320px;
+  position: relative;
+  z-index: 1;
+}
