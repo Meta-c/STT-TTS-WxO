@@ -5,6 +5,8 @@
 
 // const { on } = require("events");
 
+// const { on } = require("events");
+
 // function generateTextFromMessage(message) {
 //   return message.output.generic.map(message => message.text).join(' ');
 // }
@@ -150,7 +152,8 @@ async function getTokens() {
 async function playTextToSpeech(text) {
   const tokens = await getTokens();
 
-  const ttsUrl = `${tokens.ttsURL}/v1/synthesize?text=${encodeURIComponent(text)}&voice=en-US_AllisonV3Voice&accept=audio/mp3`;
+  const ttsUrl = `${tokens.ttsURL}/v1/synthesize?text=${encodeURIComponent(text)}&voice=en-US_MichaelV3Voice&accept=audio/ogg;codecs=opus
+`;
   const response = await fetch(ttsUrl, {
     headers: {
       Authorization: `Bearer ${tokens.ttsToken}`,
