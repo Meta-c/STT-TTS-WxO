@@ -152,7 +152,7 @@ async function getTokens() {
 async function playTextToSpeech(text) {
   const tokens = await getTokens();
 
-  const ttsUrl = `${tokens.ttsURL}/v1/synthesize?text=${encodeURIComponent(text)}&voice=en-US_MichaelV3Voice&accept=audio/ogg;codecs=opus
+  const ttsUrl = `${tokens.ttsURL}/v1/synthesize?text=${encodeURIComponent(text)}&voice=en-US_MichaelV3Voice&accept=accept=audio/mp3;codecs=opus
 `;
   const response = await fetch(ttsUrl, {
     headers: {
@@ -171,15 +171,35 @@ function generateTextFromMessage(message) {
   return message.output.generic.map(msg => msg.text).join(' ');
 }
 
+function prepareTextForTTS(text) {
+  if (!text) return '';
+
+  return text
+    // Replace URLs with "the provided link"
+    .replace(/https?:\/\/[^\s]+/g, 'the provided link')
+    // Replace markdown-style links: [text](url)
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '$1')
+    // Add pauses after numbered list items: "1. ..." becomes "1. ..."
+    .replace(/^(\d+)\.\s*/gm, '$1. ') // Just makes sure there's a period and space
+    // Add periods at the end of lines if missing
+    .replace(/([^\.\n])\n/g, '$1.\n')
+    // Convert line breaks to pauses
+    .replace(/\n+/g, '. ') // Extra line breaks → longer pause
+    // Normalize multiple spaces
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
 function handleMessageReceive(event) {
   // const synthText = generateTextFromMessage(event.data);
-  let synthText = generateTextFromMessage(event.data);
+  let synthText = prepareTextForTTS(generateTextFromMessage(event.data));
 
-  // Replace URLs with a friendly phrase
-  synthText = synthText.replace(/https?:\/\/[^\s]+/g, 'the provided link');
+  // // Replace URLs with a friendly phrase
+  // synthText = synthText.replace(/https?:\/\/[^\s]+/g, 'the provided link');
 
-  // Optional: Also remove markdown links like [click here](https://example.com)
-  synthText = synthText.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '$1');
+  // // Optional: Also remove markdown links like [click here](https://example.com)
+  // synthText = synthText.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '$1');
+
   playTextToSpeech(synthText);
 }
 
@@ -190,16 +210,16 @@ async function onStartRecord() {
   const stream = WatsonSpeech.SpeechToText.recognizeMicrophone({
     accessToken: tokens.sttToken,
     url: tokens.sttURL,
-    model: 'en-US_BroadbandModel',
+    model: 'en-US_Multimedia',
     objectMode: true,
-    interim_results: false,
+    interim_results: true,
   });
 
   let silenceTimeout = setTimeout(() => {
     console.log('Auto-stop due to silence timeout');
     stream.stop();
     setButtonState(false);
-  }, 4000); // Stop after 4 seconds of inactivity
+  }, 6000); // Stop after 4 seconds of inactivity
 
   stream.on('data', function (data) {
     clearTimeout(silenceTimeout);
