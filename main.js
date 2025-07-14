@@ -152,7 +152,7 @@ async function getTokens() {
 async function playTextToSpeech(text) {
   const tokens = await getTokens();
 
-  const ttsUrl = `${tokens.ttsURL}/v1/synthesize?text=${encodeURIComponent(text)}&voice=en-US_MichaelV3Voice&accept=accept=audio/mp3;codecs=opus
+  const ttsUrl = `${tokens.ttsURL}/v1/synthesize?text=${encodeURIComponent(text)}&voice=en-US_MichaelV3Voice&accept=audio/ogg;codecs=opus
 `;
   const response = await fetch(ttsUrl, {
     headers: {
