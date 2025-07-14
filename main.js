@@ -219,7 +219,7 @@ async function onStartRecord() {
     console.log('Auto-stop due to silence timeout');
     stream.stop();
     setButtonState(false);
-  }, 6000); // Stop after 4 seconds of inactivity
+  }, 8000); // Stop after 8 seconds of inactivity
 
   stream.on('data', function (data) {
     clearTimeout(silenceTimeout);
