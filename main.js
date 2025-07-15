@@ -144,6 +144,7 @@ let isRecording = false;
 async function getTokens() {
   if (serviceTokens) return serviceTokens;
   const res = await fetch('/getAuthTokens');
+  // const res = await fetch('http://localhost:3001/getAuthTokens');
   serviceTokens = await res.json();
   return serviceTokens;
 }
@@ -166,6 +167,47 @@ async function playTextToSpeech(text) {
   audio.play().catch(err => console.error('Audio play failed', err));
 }
 
+async function playTextToSpeechWebSocket(text) {
+  const tokens = await getTokens();
+
+  const wsURI = `wss://api.us-south.text-to-speech.watson.cloud.ibm.com/instances/500bc00e-f01c-45af-b239-7d69696bd0f0/v1/synthesize?access_token=${tokens.ttsToken}`;
+
+  
+  const audioParts = [];
+  let finalAudio = null;
+
+  const websocket = new WebSocket(wsURI);
+
+  websocket.onopen = function () {
+    const message = {
+      text: text,
+      accept: 'audio/ogg;codecs=opus',
+      voice: 'en-US_AllisonV3Voice'
+    };
+    websocket.send(JSON.stringify(message));
+  };
+
+  websocket.onmessage = function (evt) {
+    if (typeof evt.data === 'string') {
+      console.log('Received JSON message:', evt.data);
+    } else {
+      audioParts.push(evt.data);
+    }
+  };
+
+  websocket.onerror = function (evt) {
+    console.error('WebSocket error:', evt);
+  };
+
+  websocket.onclose = function (evt) {
+    console.log('WebSocket closed:', evt.code, evt.reason);
+    finalAudio = new Blob(audioParts, { type: 'audio/ogg;codecs=opus' });
+    const audioURL = URL.createObjectURL(finalAudio);
+    const audio = new Audio(audioURL);
+    audio.play().catch(err => console.error('Audio playback error:', err));
+  };
+}
+
 // ==== Build Message Text ====
 function generateTextFromMessage(message) {
   return message.output.generic.map(msg => msg.text).join(' ');
@@ -173,6 +215,22 @@ function generateTextFromMessage(message) {
 
 function prepareTextForTTS(text) {
   if (!text) return '';
+   
+
+  const lines = text.split('\n');
+  const tableStartIndex = lines.findIndex(line => /\s{2,}|\t/.test(line));
+
+  let cleanedText = '';
+
+  if (tableStartIndex > 0) {
+    // Get text before table
+    cleanedText = lines.slice(0, tableStartIndex).join(' ').trim() + '. ';
+    cleanedText += 'The provided table contains detailed information.';
+  } else {
+    // No table detected — clean full text
+    cleanedText = text;
+  }
+
 
   return text
     // Replace URLs with "the provided link"
@@ -200,7 +258,7 @@ function handleMessageReceive(event) {
   // // Optional: Also remove markdown links like [click here](https://example.com)
   // synthText = synthText.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '$1');
 
-  playTextToSpeech(synthText);
+  playTextToSpeechWebSocket(synthText);
 }
 
 // ==== STT Optimized Streaming ====
@@ -219,7 +277,7 @@ async function onStartRecord() {
     console.log('Auto-stop due to silence timeout');
     stream.stop();
     setButtonState(false);
-  }, 8000); // Stop after 8 seconds of inactivity
+  }, 10000); // Stop after 10 seconds of inactivity
 
   stream.on('data', function (data) {
     clearTimeout(silenceTimeout);
