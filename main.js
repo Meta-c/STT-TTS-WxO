@@ -143,8 +143,8 @@ let isRecording = false;
 // ==== Token Caching (can be extended to localStorage if needed) ====
 async function getTokens() {
   if (serviceTokens) return serviceTokens;
-  const res = await fetch('/getAuthTokens');
-  // const res = await fetch('http://localhost:3001/getAuthTokens');
+  // const res = await fetch('/getAuthTokens');
+  const res = await fetch('http://localhost:3001/getAuthTokens');
   serviceTokens = await res.json();
   return serviceTokens;
 }
@@ -357,13 +357,27 @@ async function onLoad(instance) {
 }
 
 // ==== Load Assistant Widget ====
+// window.watsonAssistantChatOptions = {
+//     integrationID: "fb941c31-2294-4808-b3f3-3306d2dc4329", // The ID of this integration.
+//     region: "aws-us-east-1", // The region your integration is hosted in.
+//     serviceInstanceID: "20250515-1717-0249-901a-4eeea6787c7a", // The ID of your service instance.
+//     orchestrateUIAgentExtensions: false, // If you wish to enable optional UI Agent extensions.
+//     onLoad: onLoad
+//   };
+//   setTimeout(function(){
+//     const t=document.createElement('script');
+//     t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+//     document.head.appendChild(t);
+//   });
+
+
 window.watsonAssistantChatOptions = {
-    integrationID: "fb941c31-2294-4808-b3f3-3306d2dc4329", // The ID of this integration.
-    region: "aws-us-east-1", // The region your integration is hosted in.
-    serviceInstanceID: "20250515-1717-0249-901a-4eeea6787c7a", // The ID of your service instance.
-    orchestrateUIAgentExtensions: false, // If you wish to enable optional UI Agent extensions.
-    onLoad: onLoad
-  };
+  integrationID: "12a90c93-7b71-4920-8040-d9522b19e2f3", // The ID of this integration.
+  region: "wxo-eu-de", // The region your integration is hosted in.
+  serviceInstanceID: "c74c68d4-8fd1-4244-801e-46aaca162dc1", // The ID of your service instance.
+  orchestrateUIAgentExtensions: false, // If you wish to enable optional UI Agent extensions.
+  onLoad: onLoad
+};
   setTimeout(function(){
     const t=document.createElement('script');
     t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
