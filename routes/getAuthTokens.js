@@ -6,8 +6,8 @@ const path = require('path');
 const router = express.Router();
 
 // These two files contain the credentials from your Watson Speech service instance.
-const STT_CREDENTIALS = loadCredentials('serviceCredentialsSTT.json');
-const TTS_CREDENTIALS = loadCredentials('serviceCredentialsTTS.json');
+const STT_CREDENTIALS = loadCredentials('../keys/serviceCredentialsSTT.json');
+const TTS_CREDENTIALS = loadCredentials('../keys/serviceCredentialsTTS.json');
 
 /**
  * This is the function that handles "getAuthToken" requests. It will use the provided API keys for the speech to text
