@@ -96,7 +96,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // === API Routes ===
-const getAuthTokensRouter = require('./routes/getAuthTokens');
+const getAuthTokensRouter = require('./api/getAuthTokens');
 app.use('/getAuthTokens', getAuthTokensRouter);
 
 // === Static Frontend (index.html, main.js, etc.) ===

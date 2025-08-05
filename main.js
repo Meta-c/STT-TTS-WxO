@@ -143,7 +143,7 @@ let isRecording = false;
 // ==== Token Caching (can be extended to localStorage if needed) ====
 async function getTokens() {
   if (serviceTokens) return serviceTokens;
-  const res = await fetch('/server/getAuthTokens');
+  const res = await fetch('/api/getAuthTokens');
   // const res = await fetch('http://localhost:3001/getAuthTokens');
   serviceTokens = await res.json();
   return serviceTokens;
