@@ -1,6 +1,6 @@
-// File: /api/getAuthTokens.js
+// /api/getAuthTokens.js
 
-import { IamTokenManager } from '@ibm-functions/iam-token-manager';
+import IamTokenManager from '@ibm-functions/iam-token-manager';
 
 const STT_CREDENTIALS = {
   apikey: process.env.STT_APIKEY,
@@ -18,8 +18,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (!STT_CREDENTIALS.apikey || !STT_CREDENTIALS.url || !TTS_CREDENTIALS.apikey || !TTS_CREDENTIALS.url) {
-      throw new Error('Missing one or more required environment variables');
+    if (!STT_CREDENTIALS.apikey || !TTS_CREDENTIALS.apikey) {
+      throw new Error('Missing credentials from environment');
     }
 
     const ttsManager = new IamTokenManager({ iamApikey: TTS_CREDENTIALS.apikey });
