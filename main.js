@@ -170,7 +170,7 @@ async function playTextToSpeech(text) {
 async function playTextToSpeechWebSocket(text) {
   const tokens = await getTokens();
 
-  const wsURI = `wss://api.eu-de.text-to-speech.watson.cloud.ibm.com/v1/synthesize?access_token=${encodeURIComponent(tokens.ttsToken)}`;
+  const wsURI = `wss://api.eu-de.text-to-speech.watson.cloud.ibm.com/instances/30873ef5-5b92-41a4-b9a0-d554606dcca9/v1/synthesize?access_token=${encodeURIComponent(tokens.ttsToken)}`;
 
   const audioParts = [];
   let finalAudio = null;
