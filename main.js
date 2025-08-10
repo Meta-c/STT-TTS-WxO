@@ -143,7 +143,8 @@ let isRecording = false;
 // ==== Token Caching (can be extended to localStorage if needed) ====
 async function getTokens() {
   if (serviceTokens) return serviceTokens;
-  const res = await fetch('/api/getAuthTokens');
+  const res = await fetch('/getAuthTokens');
+
   // const res = await fetch('http://localhost:3001/getAuthTokens');
   serviceTokens = await res.json();
   return serviceTokens;
@@ -170,8 +171,7 @@ async function playTextToSpeech(text) {
 async function playTextToSpeechWebSocket(text) {
   const tokens = await getTokens();
 
-  const wsURI = `wss://api.eu-de.text-to-speech.watson.cloud.ibm.com/instances/30873ef5-5b92-41a4-b9a0-d554606dcca9/v1/synthesize?access_token=${encodeURIComponent(tokens.ttsToken)}`;
-
+  const wsURI = `wss://api.eu-de.text-to-speech.watson.cloud.ibm.com/instances/30873ef5-5b92-41a4-b9a0-d554606dcca9/v1/synthesize?access_token=${tokens.ttsToken}`;
   const audioParts = [];
   let finalAudio = null;
 
