@@ -144,6 +144,7 @@ let isRecording = false;
 async function getTokens() {
   if (serviceTokens) return serviceTokens;
   const res = await fetch('/getAuthTokens');
+
   // const res = await fetch('http://localhost:3001/getAuthTokens');
   serviceTokens = await res.json();
   return serviceTokens;
@@ -171,8 +172,6 @@ async function playTextToSpeechWebSocket(text) {
   const tokens = await getTokens();
 
   const wsURI = `wss://api.eu-de.text-to-speech.watson.cloud.ibm.com/instances/30873ef5-5b92-41a4-b9a0-d554606dcca9/v1/synthesize?access_token=${tokens.ttsToken}`;
-
-  
   const audioParts = [];
   let finalAudio = null;
 
@@ -252,11 +251,6 @@ function handleMessageReceive(event) {
   // const synthText = generateTextFromMessage(event.data);
   let synthText = prepareTextForTTS(generateTextFromMessage(event.data));
 
-   if (!synthText || synthText.length < 3 || /^(yeah|he|the)[.!]*$/i.test(synthText)) {
-    console.warn('Skipping empty or irrelevant TTS text:', synthText);
-    return;
-  }
-
   // // Replace URLs with a friendly phrase
   // synthText = synthText.replace(/https?:\/\/[^\s]+/g, 'the provided link');
 
@@ -269,7 +263,6 @@ function handleMessageReceive(event) {
 // ==== STT Optimized Streaming ====
 async function onStartRecord() {
   const tokens = await getTokens();
-  let hasSent = false; //
 
   const stream = WatsonSpeech.SpeechToText.recognizeMicrophone({
     accessToken: tokens.sttToken,
@@ -288,36 +281,13 @@ async function onStartRecord() {
   stream.on('data', function (data) {
     clearTimeout(silenceTimeout);
 
-    // if (data.results[0] && data.results[0].final) {
-    //   stream.stop();
-    //   setButtonState(false);
+    if (data.results[0] && data.results[0].final) {
+      stream.stop();
+      setButtonState(false);
 
-    //   const text = data.results[0].alternatives.map(alt => alt.transcript).join(' ');
-    //   sendTextToAssistant(text);
-    // }
-
-
-      if (data.results[0] && data.results[0].final && !hasSent) {
-          const alt = data.results[0].alternatives[0];
-          const text = alt.transcript.trim();
-          const confidence = alt.confidence || 0; // Sometimes not available in some models
-
-          console.log('Transcript:', text, '| Confidence:', confidence);
-
-          // Filter: ignore meaningless text, very short, or low-confidence
-          if (
-            text.length > 2 &&
-            confidence > 0.75 &&                     // Add confidence threshold
-            !/^(yeah|he|the)[.!]*$/i.test(text)      // Filter typical noise
-          ) {
-            sendTextToAssistant(text);
-            hasSent = true;
-          }
-
-          stream.stop();
-          setButtonState(false);
-        }
-
+      const text = data.results[0].alternatives.map(alt => alt.transcript).join(' ');
+      sendTextToAssistant(text);
+    }
   });
 
   stream.on('error', function (err) {
